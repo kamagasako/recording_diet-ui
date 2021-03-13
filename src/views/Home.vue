@@ -1,11 +1,31 @@
 <template>
   <div>
     <h1>recording diet</h1>
-    <form>
-      <input type="text" v-model="username" placeholder="username" />
-      <input type="password" v-model="password" placeholder="password" />
+    <div>
+      <label for="username">username</label>
+      <input
+        type="text"
+        v-model="username"
+        id="username"
+        placeholder="username"
+      />
+    </div>
+    <div>
+      <label for="password">password</label>
+      <input
+        type="password"
+        v-model="password"
+        id="password"
+        placeholder="password"
+      />
+    </div>
+    <div>
       <button type="button" @click="login">login</button>
-    </form>
+    </div>
+    <hr />
+    <div>
+      <button type="button" @click="logout">logout</button>
+    </div>
   </div>
 </template>
 
@@ -22,6 +42,9 @@ export default defineComponent({
       password: ""
     };
   },
+  created: () => {
+    http.get("/");
+  },
   methods: {
     login() {
       console.log(this.username);
@@ -30,6 +53,9 @@ export default defineComponent({
         password: this.password
       });
       http.post("/login", params);
+    },
+    logout() {
+      http.post("/logout");
     }
   }
 });
