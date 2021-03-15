@@ -33,6 +33,7 @@
 import { defineComponent } from "vue";
 import { http } from "@/axios.ts";
 import "url";
+import { useStore } from "@/store";
 
 export default defineComponent({
   name: "Home",
@@ -52,10 +53,39 @@ export default defineComponent({
         username: this.username,
         password: this.password
       });
-      http.post("/login", params);
+      http
+        .post("/login", params)
+        .then(result => {
+          switch (result.status) {
+            case 200:
+              if (result.data["result"] == "success") {
+                const store = useStore();
+                store.commit("init", result.data);
+                this.$router.push("/main");
+              } else {
+                console.log("login failed");
+                // 画面に何か出す?
+              }
+              break;
+            case 401:
+              console.log("unauthorized");
+              // 画面に何か出す?
+              break;
+            default:
+              console.error("unknown status", result.status);
+              // 画面に何か出す?
+              break;
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
     },
     logout() {
-      http.post("/logout");
+      http.post("/logout").finally(() => {
+        const store = useStore();
+        store.commit("clear");
+      });
     }
   }
 });
