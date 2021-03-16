@@ -33,7 +33,6 @@
 import { defineComponent } from "vue";
 import { http } from "@/axios.ts";
 import "url";
-import { useStore } from "@/store";
 
 export default defineComponent({
   name: "Home",
@@ -59,8 +58,7 @@ export default defineComponent({
           switch (result.status) {
             case 200:
               if (result.data["result"] == "success") {
-                const store = useStore();
-                store.commit("init", result.data);
+                this.$store.commit("init", result.data);
                 this.$router.push("/main");
               } else {
                 console.log("login failed");
@@ -83,8 +81,7 @@ export default defineComponent({
     },
     logout() {
       http.post("/logout").finally(() => {
-        const store = useStore();
-        store.commit("clear");
+        this.$store.commit("clear");
       });
     }
   }

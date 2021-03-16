@@ -5,7 +5,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { http } from "@/axios.ts";
-import { useStore } from "@/store";
 
 export default defineComponent({
   name: "ShowUserName",
@@ -15,16 +14,18 @@ export default defineComponent({
     };
   },
   created() {
-    const store = useStore();
-    if (!store.dispatch("loggedIn")) {
+    if (!this.$store.dispatch("loggedIn")) {
+      console.log("not logged in???");
+
       // ログアウトの共通化
       http.post("/logout").finally(() => {
-        store.commit("clear");
+        this.$store.commit("clear");
         this.$router.push("/");
       });
       return;
     }
-    this.name = store.state.name != null ? store.state.name : "名無し"; // アホっぽい
+    this.name =
+      this.$store.state.name != null ? this.$store.state.name : "名無し"; // アホっぽい
   }
 });
 </script>

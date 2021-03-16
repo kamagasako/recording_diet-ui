@@ -1,16 +1,18 @@
 /*
- * TypeScriptでVuexを使う方法(simple版)
- * https://next.vuex.vuejs.org/guide/typescript-support.html#simplifying-usestore-usage
+ * TypeScriptでVuexを使う方法
+ * https://next.vuex.vuejs.org/guide/typescript-support.html
  */
 
 import { InjectionKey } from "vue";
-import { createStore, useStore as baseUseStore, Store } from "vuex";
+import { createStore, Store } from "vuex";
 
+// vuex.d.tsとの同期を忘れずに
 export interface State {
-  name?: string; // 表示名
-  role?: string; // ロール文字列
+  name?: string;
+  role?: string;
 }
 
+// define injection key
 export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore<State>({
@@ -19,29 +21,20 @@ export const store = createStore<State>({
     role: undefined
   },
   mutations: {
-    init: (state, json) => {
+    init(state, json) {
+      console.log(json);
       state.name = json.name;
       state.role = json.role;
     },
-    clear: state => {
+    clear(state) {
       state.name = undefined;
       state.role = undefined;
     }
   },
   actions: {
-    loggedIn: context => {
-      return context.state.name && context.state.role;
+    loggedIn({ state }) {
+      console.log(state.name, state.role);
+      return state.name != null && state.role != null;
     }
   }
 });
-
-export function useStore() {
-  return baseUseStore(key);
-}
-
-//export default createStore({
-//  state: {},
-//  mutations: {},
-//  actions: {},
-//  modules: {}
-//});
