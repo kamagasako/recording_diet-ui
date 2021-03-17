@@ -1,18 +1,89 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div>
+    <h1>recording diet</h1>
+    <div>
+      <label for="username">username</label>
+      <input
+        type="text"
+        v-model="username"
+        id="username"
+        placeholder="username"
+      />
+    </div>
+    <div>
+      <label for="password">password</label>
+      <input
+        type="password"
+        v-model="password"
+        id="password"
+        placeholder="password"
+      />
+    </div>
+    <div>
+      <button type="button" @click="login">login</button>
+    </div>
+    <hr />
+    <div>
+      <button type="button" @click="logout">logout</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { http } from "@/axios.ts";
+import "url";
 
 export default defineComponent({
   name: "Home",
-  components: {
-    HelloWorld
+  data: () => {
+    return {
+      username: "",
+      password: ""
+    };
+  },
+  created: () => {
+    http.get("/");
+  },
+  methods: {
+    login() {
+      console.log(this.username);
+      const params = new URLSearchParams({
+        username: this.username,
+        password: this.password
+      });
+      http
+        .post("/login", params)
+        .then(result => {
+          switch (result.status) {
+            case 200:
+              if (result.data["result"] == "success") {
+                this.$store.commit("init", result.data);
+                this.$router.push("/main");
+              } else {
+                console.log("login failed");
+                // 画面に何か出す?
+              }
+              break;
+            case 401:
+              console.log("unauthorized");
+              // 画面に何か出す?
+              break;
+            default:
+              console.error("unknown status", result.status);
+              // 画面に何か出す?
+              break;
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    },
+    logout() {
+      http.post("/logout").finally(() => {
+        this.$store.commit("clear");
+      });
+    }
   }
 });
 </script>
