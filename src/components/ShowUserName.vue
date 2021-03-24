@@ -1,5 +1,5 @@
 <template>
-  <div>{{ name }}さん</div>
+  <div>{{ name }}さん <button @click="logout">logout</button></div>
 </template>
 
 <script lang="ts">
@@ -8,24 +8,18 @@ import { http } from "@/axios.ts";
 
 export default defineComponent({
   name: "ShowUserName",
-  data: () => {
+  data() {
     return {
-      name: ""
+      name: this.$store.state.name != null ? this.$store.state.name : "名無し" // アホっぽい
     };
   },
-  created() {
-    if (!this.$store.dispatch("loggedIn")) {
-      console.log("not logged in???");
-
-      // ログアウトの共通化
+  methods: {
+    logout() {
       http.post("/logout").finally(() => {
         this.$store.commit("clear");
         this.$router.push("/");
       });
-      return;
     }
-    this.name =
-      this.$store.state.name != null ? this.$store.state.name : "名無し"; // アホっぽい
   }
 });
 </script>

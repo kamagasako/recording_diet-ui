@@ -22,10 +22,6 @@
     <div>
       <button type="button" @click="login">login</button>
     </div>
-    <hr />
-    <div>
-      <button type="button" @click="logout">logout</button>
-    </div>
   </div>
 </template>
 
@@ -78,11 +74,6 @@ export default defineComponent({
         .catch(e => {
           console.error(e);
         });
-    },
-    logout() {
-      http.post("/logout").finally(() => {
-        this.$store.commit("clear");
-      });
     }
   }
 });

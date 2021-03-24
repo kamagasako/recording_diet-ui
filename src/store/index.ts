@@ -5,6 +5,7 @@
 
 import { InjectionKey } from "vue";
 import { createStore, Store } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 // vuex.d.tsとの同期を忘れずに
 export interface State {
@@ -36,5 +37,6 @@ export const store = createStore<State>({
       console.log(state.name, state.role);
       return state.name != null && state.role != null;
     }
-  }
+  },
+  plugins: [createPersistedState({ storage: sessionStorage })]
 });
