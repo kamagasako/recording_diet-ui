@@ -8,34 +8,37 @@
   <hr />
 
   <div v-if="record">
-    <div>
-      <div>身体情報</div>
-      <pre v-show="!editting">{{ record["body"] }}</pre>
-      <div v-show="editting">
-        <textarea v-model="record['body']" cols="40" rows="2"></textarea>
-      </div>
-    </div>
-
+    <record
+      :name="'body'"
+      :title="'身体情報'"
+      :editing="editting"
+      :cols="40"
+      :rows="3"
+      :value="record['body']"
+      @change-text="changeText"
+    ></record>
     <hr />
 
-    <div>
-      <div>食事情報</div>
-      <pre v-show="!editting">{{ record["meals"] }}</pre>
-      <div v-show="editting">
-        <textarea v-model="record['meals']" cols="40" rows="10"></textarea>
-      </div>
-    </div>
-
+    <record
+      :name="'meals'"
+      :title="'食事'"
+      :editing="editting"
+      :cols="40"
+      :rows="10"
+      :value="record['meals']"
+      @change-text="changeText"
+    ></record>
     <hr />
 
-    <div>
-      <div>運動</div>
-      <pre v-show="!editting">{{ record["exercises"] }}</pre>
-      <div v-show="editting">
-        <textarea v-model="record['exercises']" cols="40" rows="2"></textarea>
-      </div>
-    </div>
-
+    <record
+      :name="'exercises'"
+      :title="'運動'"
+      :editing="editting"
+      :cols="40"
+      :rows="3"
+      :value="record['exercises']"
+      @change-text="changeText"
+    ></record>
     <hr />
 
     <div>
@@ -54,10 +57,13 @@
 import { defineComponent } from "vue";
 import { http } from "@/axios.ts";
 import moment from "moment";
+import Record from "@/components/Record.vue";
 
 export default defineComponent({
   name: "ShowRecord",
-  components: {},
+  components: {
+    Record
+  },
   data() {
     return {
       date: moment().format("YYYY-MM-DD"),
@@ -118,9 +124,14 @@ export default defineComponent({
     cancel() {
       this.editting = false;
       this.fetch(); // もうちょっとスマートに編集内容をリセットしたい
+    },
+    changeText(text, name) {
+      console.log(text, name);
+      this.record[name] = text;
     }
   },
-  computed: {}
+  computed: {},
+  emits: ["change"]
 });
 </script>
 
